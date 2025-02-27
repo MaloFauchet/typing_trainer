@@ -4,11 +4,37 @@ navigation.addEventListener("navigate", (e) => {
     }, 100);
 });
 
+// Fonction pour définir un cookie
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + value + "; path=/" + expires;
+}
+
+// Fonction pour récupérer un cookie
+function getCookie(name) {
+    let nameEQ = name + "=";
+    let cookiesArray = document.cookie.split(';');
+    for (let i = 0; i < cookiesArray.length; i++) {
+        let cookie = cookiesArray[i].trim();
+        if (cookie.indexOf(nameEQ) === 0) {
+            return cookie.substring(nameEQ.length, cookie.length);
+        }
+    }
+    return null;
+}
+
+
+// first is the letter on the keyboard, second is the finger used to type it (pinky=p, ring=r, middle=m, leftindex=l, rightindex=i)
 let azerty_keyboard = [
-    '²', '&', '1', 'é', '2', '"', '3', "'", '4', '(', '5', '-', '6', 'è', '7', '_', '8', 'ç', '9', 'à', '0', ')', '°', '=', '+', 'Backspace', '\n',
-    'Tab', 'A', 'Z', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '^', '¨', '$', '£', 'Delete', '\n',
-    'CapsLock', 'Q', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'ù', '%', '*', 'µ', 'Enter', '\n',
-    'Shift', '<', '>', 'W', 'X', 'C', 'V', 'B', 'N', ',', '?', ';', '.', ':', '/', '!', '§', 'Shift', '\n',
+    '²', '&p', '1p', 'ép', '2p', '"r', '3r', "'m", '4m', '(l', '5l', '-l', '6l', 'èi', '7i', '_m', '8m', 'çr', '9r', 'àp', '0p', ')p', '°p', '=p', '+p', 'Delete', '\n',
+    'Tab', 'Ap', 'Zr', 'Em', 'Rl', 'Tl', 'Yi', 'Ui', 'Im', 'Or', 'Pp', '^p', '¨p', '$p', '£p', 'Backspace', '\n',
+    'CapsLock', 'Qp', 'Sr', 'Dm', 'Fl', 'Gl', 'Hi', 'Ji', 'Km', 'Lr', 'Mp', 'ùp', '%p', '*p', 'µp', 'Enter', '\n',
+    'Shift', 'Wp', 'Xr', 'Cm', 'Vl', 'Bl', 'Ni', ',i', '?i', ';m', '.m', ':r', '/r', '!p', '§p', 'Shift', '\n',
     'Ctrl', 'Fn', 'Alt', 'Space', 'Alt', 'Ctrl', '\n'
 ];
 
@@ -22,6 +48,10 @@ let current_div = document.createElement('div');
 current_div.classList.add('line');
 for (let i = 0; i < azerty_keyboard.length; i++) {
     let element = azerty_keyboard[i];
+    if (element.length === 2) {
+        element = element[0];
+    }
+    let finger = azerty_keyboard[i][1];
     
     if (element == '\n') {
         last_element.classList.add('lastitem');
@@ -40,6 +70,7 @@ for (let i = 0; i < azerty_keyboard.length; i++) {
         key.classList.add('letter');
         key.setAttribute('data-key', element);
         key.id = element;
+        key.classList.add(finger);
         let span_maj_off = document.createElement('span');
         span_maj_off.classList.add('majOff');
         span_maj_off.textContent = element.toLocaleLowerCase();
@@ -106,6 +137,9 @@ for (let i = 0; i < azerty_keyboard.length; i++) {
         current_div.appendChild(key);
     } else if (element === '\"') {
         key.classList.add('symbol');
+        if (finger !== undefined) {
+            key.classList.add(finger);
+        }
         key.setAttribute('data-key', "quote");
         if (last_element.classList.contains('majOff')) {
             key.classList.add('majOn');
@@ -118,6 +152,9 @@ for (let i = 0; i < azerty_keyboard.length; i++) {
     else {
         key.classList.add('symbol');
         key.setAttribute('data-key', element);
+        if (finger !== undefined) {
+            key.classList.add(finger);
+        }
         if (last_element.classList.contains('majOff')) {
             key.classList.add('majOn');
         } else {
@@ -253,36 +290,59 @@ function setMajInactive() {
 
 // ---------- KEYBOARD CREATION FINISHED ---------- //
 //--------------------------------------------------//
-let exo = {
-    "1": "jfjf jf fjj jfff fjjf fj",
-    "2": "fj fjjfj fjfjffjf jjf jfjj fjfjjffj",
-    "3": "kd kdd dk dkk dkkd kdk dk",
-    "4": "dkdk dkd ddkdk kkddk kdkkk dkdddkkd",
-    "5": "jfkd fjdjkjfdjk jfkjf dkj"
-}
-let exo_number = document.location.href.split("#")[1];
-if (exo_number === undefined) {
-    exo_number = 1;
-    history.replaceState(null, "", "#exo=" + exo_number);
-} else {
-    exo_number = parseInt(exo_number.split("=")[1]);
-    if (isNaN(exo_number) || exo_number < 1 || exo_number > Object.keys(exo).length) {
-        exo_number = 1;
-        history.replaceState(null, "", "#exo=" + exo_number);
-    }
-}
-document.getElementById('exo-number').innerHTML = exo_number;
+let exo,
+    exo_number,
+    text,
+    current_letter,
+    letters,
+    exo_text_html,
+    nb_errors,
+    nb_errors_html,
+    is_finished;
+fetch(location.origin+'/exo/exo.json')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+    }).then(data => {
+        exo = data;
 
-let text = exo[exo_number];
-if (text === undefined) {
-    text = "Aucun exercice trouvé";
-}
-let current_letter = 0;
-let letters = text.split("");
-let exo_text_html = document.getElementById('exo-text');
-let nb_errors = 0;
-let nb_errors_html = document.getElementsByClassName('nb-errors');
-let is_finished = false;
+        exo_number = document.location.href.split("#")[1];
+        if (exo_number === undefined) {
+            exo_number = 1;
+            history.replaceState(null, "", "#exo=" + exo_number);
+        } else {
+            exo_number = parseInt(exo_number.split("=")[1]);
+            if (isNaN(exo_number) || exo_number < 1 || exo_number > Object.keys(exo).length) {
+                exo_number = 1;
+                history.replaceState(null, "", "#exo=" + exo_number);
+            }
+        }
+        document.getElementById('exo-number').innerHTML = exo_number;
+
+        text = exo[exo_number];
+        if (text === undefined) {
+            text = "Aucun exercice trouvé";
+        }
+        current_letter = 0;
+        letters = text.split("");
+        exo_text_html = document.getElementById('exo-text');
+        nb_errors = 0;
+        nb_errors_html = document.getElementsByClassName('nb-errors');
+        is_finished = false;
+
+        // exo_text_html.innerHTML = text;
+        updateCurrentLetter();
+
+        updateNbErrors();
+
+        
+        setCookie("lastExercise", exo_number, 30);
+    }).catch(error => {
+        console.error("Erreur lors de la récupération des exercices : ", error);
+    });
+
 
 function updateNbErrors() {
     for (let i = 0; i < nb_errors_html.length; i++) {
@@ -312,6 +372,20 @@ function updateCurrentLetter() {
         letter_html.innerHTML = letter;
         exo_text_html.appendChild(letter_html);
     }
+    updateHintLetter(letters[current_letter]);
+}
+
+function updateHintLetter(letter) {
+    let old_letter = document.getElementsByClassName('letter-to-type')[0];
+    if (old_letter !== undefined) {
+        old_letter.classList.remove('letter-to-type');
+    }
+    if (letter === undefined) {
+        return;
+    }
+    let new_letter = document.querySelector('li[data-key="'+letter.toUpperCase()+'"]') 
+
+    new_letter.className = 'letter-to-type ' + new_letter.className;
 }
 
 function handleKeyboardInput(key) {
@@ -365,13 +439,3 @@ function finished() {
     reessayer.style.display = 'inline-block';
     is_finished = true;
 }
-
-
-
-
-
-
-// exo_text_html.innerHTML = text;
-updateCurrentLetter();
-
-updateNbErrors();

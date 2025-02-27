@@ -8,20 +8,25 @@
 </head>
 <body>
     <header>
-        <h1>Améliorez votre Vitesse de Frappe</h1>
-        <p>Entraînez-vous et devenez un maître du clavier !</p>
+        <a href="/" class="logo"><img src="/logo.png" alt="logo" width="100px"></a>
+        <div class="flex-column">
+            <h1>Améliorez votre Vitesse de Frappe</h1>
+            <p>Entraînez-vous et devenez un maître du clavier !</p>
+        </div>
     </header>
     <main>
         <section class="introduction">
             <h2>Pourquoi s'entraîner ?</h2>
             <p>Une bonne vitesse de frappe améliore votre productivité et votre efficacité. Testez vos compétences et progressez chaque jour !</p>
         </section>
-        <section class="exercise-selection">
+        <section id="last-exercice" class="last-exercise" style="display: none;height: fit-content;">
+            <h2>Dernier exercice sélectionné</h2>
+            <a href="" id="last-exercice-button" class="exercise-button"></a>
+        </section>
+        <section class="last-exercise exercise-selection">
             <h2>Choisissez un exercice</h2>
-            <ul>
-                <li><a href="exo/#exo=1" class="exercise-button">Exercice 1</a></li>
-                <li><a href="exo/#exo=1" class="exercise-button">Exercice 2</a></li>
-                <li><a href="exo/#exo=1" class="exercise-button">Exercice 3</a></li>
+            <ul id="exercises-list">
+                <!-- Exercices ajoutés dynamiquement -->
             </ul>
         </section>
         <a href="exo/#exo=1" class="start-button">Commencer l'entraînement</a>
@@ -29,5 +34,67 @@
     <footer>
         <p>&copy; 2025 Entraînement Clavier. Tous droits réservés.</p>
     </footer>
+
+    <script>
+        let exo;
+        fetch("./exo/exo.json")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+            }).then(data => {
+                exo = data;
+                init_exercises();
+                setLastExercice();
+            }).catch(error => {
+                console.error("Erreur lors de la récupération des exercices : ", error);
+            });
+        
+        function init_exercises() {
+            let ul = document.getElementById("exercises-list");
+            for (let key in exo) {
+                if (Object.prototype.hasOwnProperty.call(exo, key)) {
+                    const element = exo[key];
+
+                    let li = document.createElement("li");
+                    let a = document.createElement("a");
+                    a.href = `exo/#exo=${key}`;
+                    if (key.length === 1) {
+                        key = "0" + key;
+                    }
+                    a.classList.add("exercise-button");
+                    a.textContent = `Exercice ${key}`;
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                }
+            }
+        }
+
+        // Fonction pour récupérer un cookie
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let cookiesArray = document.cookie.split(';');
+            for (let i = 0; i < cookiesArray.length; i++) {
+                let cookie = cookiesArray[i].trim();
+                if (cookie.indexOf(nameEQ) === 0) {
+                    return cookie.substring(nameEQ.length, cookie.length);
+                }
+            }
+            return null;
+        }
+
+        function setLastExercice() {
+            let lastExercise = getCookie("lastExercise");
+            console.log(lastExercise);
+            if (lastExercise) {
+                let message = `Exercice ${lastExercise}`;
+                let button = document.getElementById("last-exercice-button");
+                button.textContent = message;
+                button.href = `exo/#exo=${lastExercise}`;
+                document.getElementById("last-exercice").style.display = "block";
+            }
+        }
+    </script>
 </body>
 </html>

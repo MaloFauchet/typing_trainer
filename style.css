@@ -14,11 +14,37 @@ body {
     height: 100vh;
 }
 
+body::-webkit-scrollbar {
+    width: 0.3em;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #333;
+    outline: 1px solid #333;
+}
+
 header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     background-color: #007BFF;
     color: white;
     padding: 20px;
     font-size: 1.5em;
+}
+
+.logo {
+    position: absolute;
+    left: 0;
+    margin-left: 20px;
+}
+
+div.flex-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 h1.exo-title {
@@ -34,6 +60,34 @@ main {
     margin: 50px auto;
     max-width: 800px;
     height: 100%;
+}
+
+section h2 {
+    font-size: 1.9em;
+    margin-bottom: 20px;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+ul#exercises-list {
+    list-style: none;
+    padding: 0;
+    overflow-y: scroll;
+    max-height: 215px;
+}
+
+ul#exercises-list::-webkit-scrollbar {
+    width: 0.1em;
+}
+
+ul#exercises-list::-webkit-scrollbar-thumb {
+    background-color: #FF5733;
+    outline: 1px solid #FF5733;
 }
 
 p#exo-text {
@@ -57,21 +111,25 @@ p#exo-text {
     margin-bottom: 20px;
 }
 
-.exercise-selection {
+.last-exercise {
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    margin: 20px 50px;
 }
 
 .exercise-selection ul {
     list-style: none;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: row;
 }
 
 .exercise-selection li {
-    margin: 30px 0;
+    margin: 20px 10px;
 }
 
 .exercise-button {
@@ -92,6 +150,7 @@ p#exo-text {
 
 .start-button {
     background-color: #28a745;
+    text-decoration: none;
     color: white;
     padding: 15px 30px;
     font-size: 1.2em;
@@ -106,7 +165,7 @@ p#exo-text {
 }
 
 footer {
-    margin-top: 50px;
+    margin-top: 30px;
     padding: 10px;
     background-color: #333;
     color: white;
@@ -144,6 +203,8 @@ footer {
     border: 1px solid #f9f9f9;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
+    cursor: none;
+    transition: all 0.1s ease;
 }
 .capslock, .tab, .left-shift {
     clear: left;
@@ -197,4 +258,31 @@ footer {
 
 .line {
     display: flex;
+}
+
+#keyboard li.letter-to-type {
+    background-color: #6d6d6d;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* fingers colors */
+#keyboard .p {
+    background-color: #c9c8ff;
+}
+
+#keyboard .r {
+    background-color: #acf3c7;
+}
+
+#keyboard .m {
+    background-color: #ffbdca;
+}
+
+#keyboard .l {
+    background-color: #99e9e5;
+}
+
+#keyboard .i {
+    background-color: #ffeb99;
 }

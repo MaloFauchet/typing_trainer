@@ -3,41 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" cmajOntent="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="/style.css">
     <title>Typing Trainer</title>
 </head>
 <body>
-    <div id="container">
-        <h1 class="exo-title">Exercice <span id="exo-number">1</span></h1>
-    </div>
-    
-    <div id="container">
-        <p id="exo-text"></p>
-    </div>
-
-    <div id="container">
-        <p>Erreurs : <span class="nb-errors">0</span></p>
-    </div>
-
-    <div id="container">
-        <div id="keyboard">
+    <header>
+        <a href="/" class="logo"><img src="/logo.png" alt="logo" width="100px"></a>
+        <div class="flex-column">
+            <h1>Améliorez votre Vitesse de Frappe</h1>
+            <p>Entraînez-vous et devenez un maître du clavier !</p>
         </div>
-    </div>
+    </header>
 
-    <div id="container" class="success" style="display: none;">
-        <h2>Bravo !</h2>
-        <p>Vous avez réussi avec seulement <span class="nb-errors"></span> fautes !</p>
-        <p style="margin-bottom: 2em;">Vous pouvez réessayer ou passer à l'exercice suivant.</p>
-        <a href="" class="exercise-button" id="ex-suivant" style="background-color: green;">Exercice suivant</a>
-    </div>
-    <div id="container" class="failure" style="display: none;">
-        <h2>Dommage...</h2>
-        <p>Vous avez fait <span class="nb-errors"></span> fautes. Réessayez pour améliorer votre score !</p>
-    </div>
-    <div id="container">
-        <a href="" class="exercise-button" id="ex-reessayer" style="display: none;">Réessayer</a>
-    </div>
+    <main>
+        <div id="container">
+            <h1 class="exo-title">Exercice <span id="exo-number">1</span></h1>
+        </div>
+        
+        <div id="container">
+            <p id="exo-text"></p>
+        </div>
 
-    <script src="../../script.js"></script>
+        <div id="container">
+            <p>Erreurs : <span class="nb-errors">0</span></p>
+        </div>
+
+        <div id="container">
+            <div id="keyboard">
+            </div>
+        </div>
+
+        <div id="container" class="success" style="display: none;">
+            <h2>Bravo !</h2>
+            <p>Vous avez réussi avec seulement <span class="nb-errors"></span> fautes !</p>
+            <p style="margin-bottom: 2em;">Vous pouvez réessayer ou passer à l'exercice suivant.</p>
+            <a href="" class="exercise-button" id="ex-suivant" style="background-color: green;">Exercice suivant</a>
+        </div>
+        <div id="container" class="failure" style="display: none;">
+            <h2>Dommage...</h2>
+            <p>Vous avez fait <span class="nb-errors"></span> fautes. Réessayez pour améliorer votre score !</p>
+        </div>
+        <div id="container">
+            <a href="" class="exercise-button" id="ex-reessayer" style="display: none;">Réessayer</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Entraînement Clavier. Tous droits réservés.</p>
+    </footer>
+
+    <script src="/script.js"></script>
 </body>
 </html>
