@@ -1,3 +1,9 @@
+navigation.addEventListener("navigate", (e) => {
+    setTimeout(() => {
+        location.reload();
+    }, 100);
+});
+
 let azerty_keyboard = [
     '²', '&', '1', 'é', '2', '"', '3', "'", '4', '(', '5', '-', '6', 'è', '7', '_', '8', 'ç', '9', 'à', '0', ')', '°', '=', '+', 'Backspace', '\n',
     'Tab', 'A', 'Z', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '^', '¨', '$', '£', 'Delete', '\n',
@@ -340,12 +346,12 @@ function finished() {
         } else {
             ex_suivant.href = "#exo=" + (exo_number + 1);
             ex_suivant.style.display = 'inline-block';
-            ex_suivant.onclick = function() {
-                // set a timeout to avoid the page to reload before the alert
-                setTimeout(() => {
-                    location.reload();
-                }, 100);
-            }
+            // ex_suivant.onclick = function() {
+            //     // set a timeout to avoid the page to reload before the alert
+            //     setTimeout(() => {
+            //         location.reload();
+            //     }, 100);
+            // }
         }
     } else {
         document.getElementsByClassName('failure')[0].style.display = 'block';
