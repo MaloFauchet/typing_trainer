@@ -249,7 +249,7 @@ function setMajInactive() {
 //--------------------------------------------------//
 let exo = {
     "1": "jfjf jf fjj jfff fjjf fj",
-    "2": "fj fjjfj fjfjffjf jjf jfjjd fjfjjffj",
+    "2": "fj fjjfj fjfjffjf jjf jfjj fjfjjffj",
     "3": "kd kdd dk dkk dkkd kdk dk",
     "4": "dkdk dkd ddkdk kkddk kdkkk dkdddkkd",
     "5": "jfkd fjdjkjfdjk jfkjf dkj"
@@ -340,6 +340,12 @@ function finished() {
         } else {
             ex_suivant.href = "#exo=" + (exo_number + 1);
             ex_suivant.style.display = 'inline-block';
+            ex_suivant.onclick = function() {
+                // set a timeout to avoid the page to reload before the alert
+                setTimeout(() => {
+                    location.reload();
+                }, 100);
+            }
         }
     } else {
         document.getElementsByClassName('failure')[0].style.display = 'block';
