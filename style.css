@@ -2,10 +2,117 @@
     margin: 0;
     padding: 0;
 }
+
 body {
+    display: flex;
+    flex-direction: column;
     font: 71%/1.5 Verdana, Sans-Serif;
     background: #eee;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
 }
+
+header {
+    background-color: #007BFF;
+    color: white;
+    padding: 20px;
+    font-size: 1.5em;
+}
+
+h1.exo-title {
+    font-size: 4em;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+
+    margin: 50px auto;
+    max-width: 800px;
+    height: 100%;
+}
+
+p#exo-text {
+    background: white;
+    font-size: 3em;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.letter-done {
+    color: #28a745;
+}
+
+.introduction {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.exercise-selection {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.exercise-selection ul {
+    list-style: none;
+    padding: 0;
+}
+
+.exercise-selection li {
+    margin: 30px 0;
+}
+
+.exercise-button {
+    background-color: #FF5733;
+    text-decoration: none;
+    color: white;
+    padding: 12px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.exercise-button:hover {
+    background-color: #E64A19;
+}
+
+.start-button {
+    background-color: #28a745;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.start-button:hover {
+    background-color: #218838;
+}
+
+footer {
+    margin-top: 50px;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+}
+
+
 #container {
     margin: 10px auto;
     width: 800px;

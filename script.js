@@ -98,6 +98,16 @@ for (let i = 0; i < azerty_keyboard.length; i++) {
         key.setAttribute('data-key', ' ');
         key.textContent = element;
         current_div.appendChild(key);
+    } else if (element === '\"') {
+        key.classList.add('symbol');
+        key.setAttribute('data-key', "quote");
+        if (last_element.classList.contains('majOff')) {
+            key.classList.add('majOn');
+        } else {
+            key.classList.add('majOff');
+        }
+        key.textContent = element;
+        current_div.appendChild(key);
     }
     else {
         key.classList.add('symbol');
@@ -125,26 +135,74 @@ onkeydown = function (e) {
             setMajInactive();
             document.querySelector('.capslock').classList.remove('active');
         }
+        shiftAction();
     }
     if (e.key === 'Shift') {
         shiftAction();
         document.querySelector('.left-shift').classList.add('active');
         document.querySelector('.rigth-shift').classList.add('active');
+    } else if (e.key === 'Enter') {
+        document.querySelector('.enter').classList.add('active');
+    } else if (e.key === 'Backspace') {
+        document.querySelector('.backspace').classList.add('active');
+    } else if (e.key === 'Tab') {
+        e.preventDefault();
+        document.querySelector('.tab').classList.add('active');
+    } else if (e.key === 'Delete') {
+        document.querySelector('.delete').classList.add('active');
+    } else if (e.key === 'é') {
+        document.querySelector('li[data-key="é"]').classList.add('active');
+    } else if (e.key === '\"') {
+        document.querySelector('li[data-key="quote"]').classList.add('active');
+    } else if (e.key === 'Control') {
+        document.querySelectorAll('li[data-key="Control"]').forEach((elem) => {
+            elem.classList.add('active');
+        });
+    } else if (e.key === 'Alt') {
+        e.preventDefault();
+        document.querySelectorAll('li[data-key="Alt"]').forEach((elem) => {
+            elem.classList.add('active');
+        });
     }
     let key = document.querySelectorAll(`li[data-key="${e.key.toLocaleUpperCase()}"]`);
     key.forEach(element => {
         element.classList.add('active');
     });
+    handleKeyboardInput(e.key);
 }
 
 onkeyup = function (e) {
-    let key = document.querySelectorAll(`li[data-key="${e.key.toUpperCase()}"]`);
+    let key;
+    if (e.key === '\"') {
+        key = "quote";
+    } 
     if (e.key === 'Shift') {
         shiftAction(true);
         document.querySelector('.left-shift').classList.remove('active');
         document.querySelector('.rigth-shift').classList.remove('active');
+    } else if (e.key === 'Enter') {
+        document.querySelector('.enter').classList.remove('active');
+    } else if (e.key === 'Backspace') {
+        document.querySelector('.backspace').classList.remove('active');
+    } else if (e.key === 'Tab') {
+        e.preventDefault();
+        document.querySelector('.tab').classList.remove('active');
+    } else if (e.key === 'Delete') {
+        document.querySelector('.delete').classList.remove('active');
+    } else if (e.key === 'é') {
+        document.querySelector('li[data-key="é"]').classList.remove('active');
+    } else if (e.key === '\"') {
+        document.querySelector('li[data-key="quote"]').classList.remove('active');
+    } else if (e.key === 'Control') {
+        document.querySelectorAll('li[data-key="Control"]').forEach((elem) => {
+            elem.classList.remove('active');
+        });
+    } else if (e.key === 'Alt') {
+        document.querySelectorAll('li[data-key="Alt"]').forEach((elem) => {
+            elem.classList.remove('active');
+        });
     }
-    key.forEach(element => {
+    document.querySelectorAll(`li[data-key="${e.key.toUpperCase()}"]`).forEach(element => {
         element.classList.remove('active');
     });
 }
@@ -186,3 +244,83 @@ function setMajInactive() {
         element.style.display = 'none';
     });
 }
+
+// ---------- KEYBOARD CREATION FINISHED ---------- //
+//--------------------------------------------------//
+
+function updateNbErrors() {
+    nb_errors_html.innerHTML = nb_errors;
+}
+
+function updateCurrentLetter() {
+    for (let i = 0; i < letters.length; i++) {
+        const letter = letters[i];
+        
+        let letter_html = document.createElement('span');
+        if (i === current_letter) {
+            let cursor = document.createElement('span');
+            cursor.classList.add('cursor');
+            cursor.textContent = '|';
+            exo_text_html.appendChild(cursor);
+
+            letter_html.classList.add('current-letter');
+        } else if (i < current_letter) {
+            letter_html.classList.add('letter-done');
+        } else {
+            letter_html.classList.add('letter-to-do');
+        }
+        letter_html.innerHTML = letter;
+        exo_text_html.appendChild(letter_html);
+    }
+}
+
+function handleKeyboardInput(key) {
+    if (key === 'Backspace') {
+        if (current_letter > 0) {
+            current_letter--;
+        }
+    } else {
+        if (key === letters[current_letter]) {
+            current_letter++;
+        } else {
+            nb_errors++;
+        }
+    }
+    updateNbErrors();
+    exo_text_html.innerHTML = '';
+    updateCurrentLetter();
+}
+
+
+let exo = {
+    "1": "jfjf jf fjj jfff fjjf fj"
+}
+let exo_number = document.location.href.split("#")[1];
+if (exo_number === undefined) {
+    exo_number = 1;
+    history.replaceState(null, "", "#exo=" + exo_number);
+} else {
+    exo_number = parseInt(exo_number.split("=")[1]);
+    if (isNaN(exo_number) || exo_number < 1 || exo_number > 4) {
+        exo_number = 1;
+        history.replaceState(null, "", "#exo=" + exo_number);
+    }
+}
+
+let text = exo[exo_number];
+if (text === undefined) {
+    text = "Aucun exercice trouvé";
+
+}
+
+let current_letter = 0;
+let letters = text.split("");
+
+
+let exo_text_html = document.getElementById('exo-text');
+// exo_text_html.innerHTML = text;
+updateCurrentLetter();
+
+let nb_errors = 0;
+let nb_errors_html = document.getElementById('nb-errors');
+updateNbErrors();
