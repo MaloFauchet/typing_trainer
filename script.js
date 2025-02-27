@@ -247,9 +247,43 @@ function setMajInactive() {
 
 // ---------- KEYBOARD CREATION FINISHED ---------- //
 //--------------------------------------------------//
+let exo = {
+    "1": "jfjf jf fjj jfff fjjf fj",
+    "2": "fj fjjfj fjfjffjf jjf jfjjd fjfjjffj",
+    "3": "kd kdd dk dkk dkkd kdk dk",
+    "4": "dkdk dkd ddkdk kkddk kdkkk dkdddkkd",
+    "5": "jfkd fjdjkjfdjk jfkjf dkj"
+}
+let exo_number = document.location.href.split("#")[1];
+if (exo_number === undefined) {
+    exo_number = 1;
+    history.replaceState(null, "", "#exo=" + exo_number);
+} else {
+    exo_number = parseInt(exo_number.split("=")[1]);
+    if (isNaN(exo_number) || exo_number < 1 || exo_number > Object.keys(exo).length) {
+        exo_number = 1;
+        history.replaceState(null, "", "#exo=" + exo_number);
+    }
+}
+document.getElementById('exo-number').innerHTML = exo_number;
+
+let text = exo[exo_number];
+if (text === undefined) {
+    text = "Aucun exercice trouvé";
+}
+let current_letter = 0;
+let letters = text.split("");
+let exo_text_html = document.getElementById('exo-text');
+let nb_errors = 0;
+let nb_errors_html = document.getElementsByClassName('nb-errors');
+let is_finished = false;
 
 function updateNbErrors() {
-    nb_errors_html.innerHTML = nb_errors;
+    for (let i = 0; i < nb_errors_html.length; i++) {
+        const element = nb_errors_html[i];
+        element.innerHTML = nb_errors;
+    }
+    // nb_errors_html.innerHTML = nb_errors;
 }
 
 function updateCurrentLetter() {
@@ -275,52 +309,57 @@ function updateCurrentLetter() {
 }
 
 function handleKeyboardInput(key) {
-    if (key === 'Backspace') {
-        if (current_letter > 0) {
-            current_letter--;
+    if (!is_finished) {
+        if (key === 'Backspace') {
+            if (current_letter > 0) {
+                current_letter--;
+            }
+        } else {
+            if (key === letters[current_letter]) {
+                current_letter++;
+            } else {
+                nb_errors++;
+            }
+        }
+        updateNbErrors();
+        exo_text_html.innerHTML = '';
+        updateCurrentLetter();
+    }
+    if (current_letter === letters.length) {
+        finished();
+    }
+}
+
+function finished() {
+    if (nb_errors <= 3) {
+        document.getElementsByClassName('success')[0].style.display = 'block';
+        let ex_suivant = document.getElementById('ex-suivant');
+        if (exo_number === Object.keys(exo).length) {
+            alert("Bravo, vous avez terminé tous les exercices !");
+            ex_suivant.style.display = 'none';
+        } else {
+            ex_suivant.href = "#exo=" + (exo_number + 1);
+            ex_suivant.style.display = 'inline-block';
         }
     } else {
-        if (key === letters[current_letter]) {
-            current_letter++;
-        } else {
-            nb_errors++;
-        }
+        document.getElementsByClassName('failure')[0].style.display = 'block';
     }
-    updateNbErrors();
-    exo_text_html.innerHTML = '';
-    updateCurrentLetter();
-}
 
-
-let exo = {
-    "1": "jfjf jf fjj jfff fjjf fj"
-}
-let exo_number = document.location.href.split("#")[1];
-if (exo_number === undefined) {
-    exo_number = 1;
-    history.replaceState(null, "", "#exo=" + exo_number);
-} else {
-    exo_number = parseInt(exo_number.split("=")[1]);
-    if (isNaN(exo_number) || exo_number < 1 || exo_number > 4) {
-        exo_number = 1;
-        history.replaceState(null, "", "#exo=" + exo_number);
+    let reessayer = document.getElementById('ex-reessayer');
+    reessayer.href = "#exo=" + exo_number;
+    reessayer.onclick = function() {
+        location.reload();
     }
+    reessayer.style.display = 'inline-block';
+    is_finished = true;
 }
 
-let text = exo[exo_number];
-if (text === undefined) {
-    text = "Aucun exercice trouvé";
-
-}
-
-let current_letter = 0;
-let letters = text.split("");
 
 
-let exo_text_html = document.getElementById('exo-text');
+
+
+
 // exo_text_html.innerHTML = text;
 updateCurrentLetter();
 
-let nb_errors = 0;
-let nb_errors_html = document.getElementById('nb-errors');
 updateNbErrors();
